@@ -21,8 +21,9 @@ public class GreetingServiceApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
-		repo.save(new Book("1", "Ramesh", "Bewafai", 10));
-
-		repo.save(new Book("2", "Kumar", "Bewafai2", 100));}
+//		repo.save(new Book("1", "Ramesh", "Bewafai", 10));
+//
+//		repo.save(new Book("2", "Kumar", "Bewafai2", 100));
+		}
 
 }

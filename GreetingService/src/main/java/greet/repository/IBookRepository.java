@@ -9,7 +9,7 @@ import greet.models.Book;
 //@Repository
 public interface IBookRepository extends MongoRepository<Book, String>{
 
-//	Book findByIsbn(String isbn);
-//
-//	void deleteByIsbn(String isbn);
+	Book findByIsbn(String isbn);
+
+	void deleteByIsbn(String isbn);
 }

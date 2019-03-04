@@ -24,7 +24,7 @@ public class BookService implements IBookService {
 
 	@Override
 	public boolean deleteBook(String isbn) {
-//		bookRepo.deleteByIsbn(isbn);
+		bookRepo.deleteByIsbn(isbn);
 		return true;
 	}
 
@@ -36,10 +36,9 @@ public class BookService implements IBookService {
 
 	@Override
 	public Book getBook(String isbn) {
-//		Book book = bookRepo.findByIsbn(isbn);
-//		
-//		return book;
-		return null;
+		Book book = bookRepo.findByIsbn(isbn);		
+		return book;
+		
 	}
 
 }
