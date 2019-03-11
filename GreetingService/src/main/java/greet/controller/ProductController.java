@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,23 +29,28 @@ import greet.serviceImp.ShoppingService;
 public class ProductController {
 
 	@Autowired
-	ShoppingService service;
+	IProductCatalogService prodService;
 	
+
 	
-	@PostMapping("/cart/addproduct")
-	public ResponseEntity<?> addProd(@RequestBody OrderLine oLine) {
-		service.addToCart(oLine.getProductNumber(), oLine.getQuantity());
+	@PostMapping("/product")
+	public ResponseEntity<?> addProd(@RequestBody Product prod) {
+		prodService.addProduct(prod.getProductNumber(), prod.getDescription(), prod.getPrice());
 		return new ResponseEntity<CustomSuccess>(new CustomSuccess("Product added"),HttpStatus.OK);
 	}
-	
-	@GetMapping("/cart/{cartID}")
-	public ResponseEntity<?> getProduct(@PathVariable("cartID") String cartID) {
-		ShoppingCart cart = service.getCart(cartID);
-		if(cart != null)
-		return new ResponseEntity<ShoppingCart>(cart, HttpStatus.OK);
-		else return new ResponseEntity<CustomError>(new CustomError("Cart has not been found with  "+cartID), HttpStatus.NOT_FOUND);
+	@PatchMapping("/product/stock/{productNumber}")
+	public ResponseEntity<?> updateProduct(@PathVariable("productNumber") long productNumber, @RequestBody Stock stock) {
+		prodService.setStock(productNumber, stock.getQuantity(), stock.getLocationcode());
+		return new ResponseEntity<CustomSuccess>(new CustomSuccess("Product data updated"),HttpStatus.OK);
 	}
 	
+	@GetMapping("/product/{productNumber}")
+	public ResponseEntity<?> getProduct(@PathVariable("productNumber") long productNumber) {
+		Product prod = prodService.getProduct(productNumber);
+		if(prod != null)
+		return new ResponseEntity<Product>(prod, HttpStatus.OK);
+		else return new ResponseEntity<CustomError>(new CustomError("Product has not been found with  "+productNumber), HttpStatus.NOT_FOUND);
+	}
 	
 	
 }

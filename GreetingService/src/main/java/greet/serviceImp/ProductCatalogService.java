@@ -35,7 +35,7 @@ public class ProductCatalogService implements IProductCatalogService {
 	public void setStock(long productNumber, int quantity, long locationcode) {
 		Product p = repo.findByProductNumber(productNumber);
 		p.setStock(new Stock(quantity, locationcode));
-		
+		repo.save(p);
 //		repo.setStock(new Stock(quantity, locationcode));
 		
 	}

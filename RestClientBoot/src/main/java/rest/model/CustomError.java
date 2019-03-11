@@ -1,19 +1,20 @@
-package greet.models;
+package rest.model;
 
 public class CustomError {
-	private String message;
+	private String errorMessage;
 
+	public CustomError() {}
 	public CustomError(String errorMessage) {
 		// TODO Auto-generated constructor stub
-		this.message = errorMessage;
+		this.errorMessage = errorMessage;
 	}
 
 	public String getErrorMessage() {
-		return message;
+		return errorMessage;
 	}
 
 	public void setErrorMessage(String errorMessage) {
-		this.message = errorMessage;
+		this.errorMessage = errorMessage;
 	}
 
 }

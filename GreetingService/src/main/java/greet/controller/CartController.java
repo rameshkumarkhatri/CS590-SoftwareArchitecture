@@ -15,36 +15,55 @@ import org.springframework.web.bind.annotation.RestController;
 import greet.models.Book;
 import greet.models.CustomError;
 import greet.models.CustomSuccess;
+import greet.models.product.Order;
+import greet.models.product.OrderLine;
 import greet.models.product.Product;
+import greet.models.product.ShoppingCart;
 import greet.models.product.Stock;
 import greet.service.IBookService;
 import greet.service.IProductCatalogService;
+import greet.serviceImp.OrderService;
+import greet.serviceImp.ShoppingService;
 
 @RestController
 public class CartController {
 
 	@Autowired
-	IProductCatalogService prodService;
+	ShoppingService service;
+	@Autowired
+	OrderService serviceOrder;
 	
 	
-	@PostMapping("/product")
-	public ResponseEntity<?> addProd(@RequestBody Product prod) {
-		prodService.addProduct(prod.getProductNumber(), prod.getDescription(), prod.getPrice());
-		return new ResponseEntity<CustomSuccess>(new CustomSuccess("Product added"),HttpStatus.OK);
-	}
-	@PostMapping("/product/stock/{productNumber}")
-	public ResponseEntity<?> updateProduct(@PathVariable("productNumber") long productNumber, @RequestBody Stock stock) {
-		prodService.setStock(productNumber, stock.getQuantity(), stock.getLocationcode());
-		return new ResponseEntity<CustomSuccess>(new CustomSuccess("Product data updated"),HttpStatus.OK);
+	@PostMapping("/cart/addproduct/{cartID}")
+	public ResponseEntity<?> addProd(@RequestBody OrderLine oLine, @PathVariable("cartID") String cartID) {
+//		if(cartID.equals("0"))
+		service.addToCart(cartID, oLine.getProductNumber(), oLine.getQuantity());
+		return new ResponseEntity<CustomSuccess>(new CustomSuccess("Product added", cartID),HttpStatus.OK);
 	}
 	
-	@GetMapping("/product/{productNumber}")
-	public ResponseEntity<?> getProduct(@PathVariable("productNumber") long productNumber) {
-		Product prod = prodService.getProduct(productNumber);
-		if(prod != null)
-		return new ResponseEntity<Product>(prod, HttpStatus.OK);
-		else return new ResponseEntity<CustomError>(new CustomError("Product has not been found with  "+productNumber), HttpStatus.NOT_FOUND);
+	@GetMapping("/cart/{cartID}")
+	public ResponseEntity<?> getProduct(@PathVariable("cartID") String cartID) {
+		ShoppingCart cart = service.getCart(cartID);
+		if(cart != null)
+		return new ResponseEntity<ShoppingCart>(cart, HttpStatus.OK);
+		else return new ResponseEntity<CustomError>(new CustomError("Cart has not been found with  "+cartID), HttpStatus.NOT_FOUND);
 	}
+	
+	@PostMapping("/cart/checkout/{cartID}")
+	public ResponseEntity<?> checkoutCart(@PathVariable("cartID") String cartID) {
+		ShoppingCart cart = service.getCart(cartID);
+	
+		if(cart != null)
+		 {
+			
+			serviceOrder.createOrder(cartID, cart);
+			return new ResponseEntity<CustomSuccess>(new CustomSuccess("Order created with orderNumber "+cartID),HttpStatus.OK);
+		}
+		else return new ResponseEntity<CustomError>(new CustomError("Cart has not been found with  "+cartID), HttpStatus.NOT_FOUND);
+	}
+	
+	
+	
 	
 	
 	

@@ -1,17 +1,13 @@
-package greet.models.product;
+package rest.model;
 
 
 public class OrderLine { //extends Product{
 
 	int quantity;
 	
-	public OrderLine() {
-		
-	}
-	
-	public OrderLine(long productnumber, int quantity) {
-		this.quantity = quantity;
-		this.productNumber = productnumber;
+	public OrderLine(long productnumber2, int quantity2) {
+		this.quantity = quantity2;
+		this.productNumber = productnumber2;
 	}
 
 	public long getProductNumber() {

@@ -1,13 +1,8 @@
-package greet.models;
+package rest.model;
 
 public class CustomSuccess {
 	String message;
-	String id;
-	public CustomSuccess(String message, String id) {
-		// TODO Auto-generated constructor stub
-		this.message = message;
-		this.id = id;
-	}
+	public CustomSuccess() {}
 	public CustomSuccess(String message) {
 		// TODO Auto-generated constructor stub
 		this.message = message;
