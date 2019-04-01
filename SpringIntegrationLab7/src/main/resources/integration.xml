@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:beans="http://www.springframework.org/schema/beans"
+        xmlns:int-http="http://www.springframework.org/schema/integration/http"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration/http 
+        http://www.springframework.org/schema/integration/http/spring-integration-http.xsd
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+<channel id="orderreceiveChannel"/>
+<channel id="orderRejectedChannel"/>
+
+<channel id="orderLineChannel"/>
+<channel id="checkStockChannel"/>
+
+<channel id="paymentChannel"/>
+<channel id="orderToSupplierChannel"/>
+
+<filter input-channel="orderreceiveChannel" output-channel= "orderLineChannel"
+ref="amountFilter" method="filter" discard-channel="orderRejectedChannel"/>
+<beans:bean id="amountFilter" class="integration.filter.AmountFilter"/>
+
+<service-activator input-channel="orderRejectedChannel" ref="amountRejectService" method="reject"/>
+<beans:bean id="amountRejectService" class="integration.rejector.OrderRejectService"/>
+
+
+
+<filter input-channel="stockChannel" output-channel= "paymentChannel"
+ref="stockFilter" method="filter" discard-channel="orderToSupplierChannel"/>
+<beans:bean id="stockFilter" class="integration.filter.StockFilter"/>
+
+
+<service-activator input-channel="paymentChannel" ref="paymentService" method="processPayment"/>
+<beans:bean id="paymentService" class="integration.service.PaymentService" />
+
+
+
+<service-activator input-channel="orderToSupplierChannel" ref="orderToSupplier" method="orderToSupplier"/>
+<beans:bean id="orderToSupplier" class="integration.service.OrderToSupplierService"/>
+
+<!-- <splitter input-channel="orderLineChannel" ref="splitOrder" method="split"/>
+
+<beans:bean id="splitOrder" class="integration.split.OrderSplit" />
+
+<filter input-channel ="checkStockChannel" 
+ref="stockFilter" method="filterAmount" throw-exception-on-rejection="true"/>
+<beans:bean id="stockFilter" class="integration.filter.AmountFilter"/>  -->
+
+
+
+</beans:beans>
